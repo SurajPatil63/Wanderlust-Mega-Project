@@ -1,6 +1,6 @@
 @Library('Shared') _
 pipeline {
-    agent {label 'Node'}
+    agent any
     
     environment{
         SONAR_HOME = tool "Sonar"
@@ -32,7 +32,7 @@ pipeline {
         stage('Git: Code Checkout') {
             steps {
                 script{
-                    code_checkout("https://github.com/LondheShubham153/Wanderlust-Mega-Project.git","main")
+                    code_checkout("https://github.com/SurajPatil63/Wanderlust-Mega-Project.git","main")
                 }
             }
         }
@@ -74,8 +74,13 @@ pipeline {
                 stage("Backend env setup"){
                     steps {
                         script{
-                            dir("Automations"){
-                                sh "bash updatebackendnew.sh"
+                            withCredentials([usernamePassword(
+                                credentialsId: 'aws-credentials',
+                                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                dir("Automations"){
+                                    sh "bash updatebackendnew.sh"
+                                }
                             }
                         }
                     }
@@ -84,8 +89,13 @@ pipeline {
                 stage("Frontend env setup"){
                     steps {
                         script{
-                            dir("Automations"){
-                                sh "bash updatefrontendnew.sh"
+                            withCredentials([usernamePassword(
+                                credentialsId: 'aws-credentials',
+                                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                                dir("Automations"){
+                                    sh "bash updatefrontendnew.sh"
+                                }
                             }
                         }
                     }
